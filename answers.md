@@ -8,8 +8,10 @@ select * from work where museum_id is null;
 
 ```sql
 select * from museum m
-where not exists (select 1 from work w
-					where w.museum_id=m.museum_id)
+where not exists (
+	select 1 from work w
+	where w.museum_id=m.museum_id
+);
 ```
 
 3. How many paintings have an asking price of more than their regular price?
