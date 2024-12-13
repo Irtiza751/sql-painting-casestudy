@@ -91,13 +91,14 @@ where mh2.museum_id=mh.museum_id
 and mh2.day='Monday');
 ```
 13. How many museums are open every single day?
-    select count(1)
-    from (select museum_id, count(1)
-    from museum_hours
-    group by museum_id
-    having count(1) = 7) x;
-
-14. Which are the top 5 most popular museum? (Popularity is defined based on most no of paintings in a museum)
+```sql
+select count(1)
+from (select museum_id, count(1)
+from museum_hours
+group by museum_id
+having count(1) = 7) x;
+```
+15. Which are the top 5 most popular museum? (Popularity is defined based on most no of paintings in a museum)
     select m.name as museum, m.city,m.country,x.no_of_painintgs
     from ( select m.museum_id, count(1) as no_of_painintgs
     , rank() over(order by count(1) desc) as rnk
@@ -107,7 +108,7 @@ and mh2.day='Monday');
     join museum m on m.museum_id=x.museum_id
     where x.rnk<=5;
 
-15. Who are the top 5 most popular artist? (Popularity is defined based on most no of paintings done by an artist)
+16. Who are the top 5 most popular artist? (Popularity is defined based on most no of paintings done by an artist)
     select a.full_name as artist, a.nationality,x.no_of_painintgs
     from ( select a.artist_id, count(1) as no_of_painintgs
     , rank() over(order by count(1) desc) as rnk
@@ -117,7 +118,7 @@ and mh2.day='Monday');
     join artist a on a.artist_id=x.artist_id
     where x.rnk<=5;
 
-16. Display the 3 least popular canva sizes
+17. Display the 3 least popular canva sizes
     select label,ranking,no_of_paintings
     from (
     select cs.size_id,cs.label,count(1) as no_of_paintings
@@ -128,7 +129,7 @@ and mh2.day='Monday');
     group by cs.size_id,cs.label) x
     where x.ranking<=3;
 
-17. Which museum is open for the longest during a day. Dispay museum name, state and hours open and which day?
+18. Which museum is open for the longest during a day. Dispay museum name, state and hours open and which day?
     select museum_name,state as city,day, open, close, duration
     from ( select m.name as museum_name, m.state, day, open, close
     , to_timestamp(open,'HH:MI AM')
@@ -139,7 +140,7 @@ and mh2.day='Monday');
     join museum m on m.museum_id=mh.museum_id) x
     where x.rnk=1;
 
-18. Which museum has the most no of most popular painting style?
+19. Which museum has the most no of most popular painting style?
     with pop_style as
     (select style
     ,rank() over(order by count(1) desc) as rnk
@@ -158,7 +159,7 @@ and mh2.day='Monday');
     from cte
     where rnk=1;
 
-19. Identify the artists whose paintings are displayed in multiple countries
+20. Identify the artists whose paintings are displayed in multiple countries
     with cte as
     (select distinct a.full_name as artist
     --, w.name as painting, m.name as museum
@@ -172,7 +173,7 @@ and mh2.day='Monday');
     having count(1)>1
     order by 2 desc;
 
-20. Display the country and the city with most no of museums. Output 2 seperate columns to mention the city and country. If there are multiple value, seperate them with comma.
+21. Display the country and the city with most no of museums. Output 2 seperate columns to mention the city and country. If there are multiple value, seperate them with comma.
     with cte_country as
     (select country, count(1)
     , rank() over(order by count(1) desc) as rnk
@@ -189,7 +190,7 @@ and mh2.day='Monday');
     where country.rnk = 1
     and city.rnk = 1;
 
-21. Identify the artist and the museum where the most expensive and least expensive painting is placed.
+22. Identify the artist and the museum where the most expensive and least expensive painting is placed.
     Display the artist name, sale_price, painting name, museum name, museum city and canvas label
     with cte as
     (select \*
@@ -208,7 +209,7 @@ and mh2.day='Monday');
     join canvas_size cz on cz.size_id = cte.size_id::NUMERIC
     where rnk=1 or rnk_asc=1;
 
-22. Which country has the 5th highest no of paintings?
+23. Which country has the 5th highest no of paintings?
     with cte as
     (select m.country, count(1) as no_of_Paintings
     , rank() over(order by count(1) desc) as rnk
@@ -219,7 +220,7 @@ and mh2.day='Monday');
     from cte
     where rnk=5;
 
-23. Which are the 3 most popular and 3 least popular painting styles?
+24. Which are the 3 most popular and 3 least popular painting styles?
     with cte as
     (select style, count(1) as cnt
     , rank() over(order by count(1) desc) rnk
@@ -233,7 +234,7 @@ and mh2.day='Monday');
     where rnk <=3
     or rnk > no_of_records - 3;
 
-24. Which artist has the most no of Portraits paintings outside USA?. Display artist name, no of paintings and the artist nationality.
+25. Which artist has the most no of Portraits paintings outside USA?. Display artist name, no of paintings and the artist nationality.
     select full_name as artist_name, nationality, no_of_paintings
     from (
     select a.full_name, a.nationality
